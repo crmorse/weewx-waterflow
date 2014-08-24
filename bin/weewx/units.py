@@ -4,7 +4,7 @@
 #
 #    See the file LICENSE.txt for your full rights.
 #
-# $Id$
+# $Id: units.py 2216 2014-05-14 19:43:32Z mwall $
 #
 """Data structures and functions for dealing with units."""
 
@@ -90,7 +90,9 @@ obs_group_dict = {"altitude"           : "group_altitude",
                   "consBatteryVoltage" : "group_volt",
                   "heatingVoltage"     : "group_volt",
                   "referenceVoltage"   : "group_volt",
-                  "supplyVoltage"      : "group_volt"}
+                  "supplyVoltage"      : "group_volt",
+                  "streamGage"         : "group_depth",
+                  "waterFlow"          : "group_volume"}
 
 # Some aggregations when applied to a type result in a different unit
 # group. This data structure maps aggregation type to the group:
@@ -126,7 +128,9 @@ USUnits     = {"group_altitude"    : "foot",
                "group_temperature" : "degree_F",
                "group_time"        : "unix_epoch",
                "group_uv"          : "uv_index",
-               "group_volt"        : "volt"}
+               "group_volt"        : "volt",
+               "group_depth"       : "inch",
+               "group_volume"      : "gallon_per_minute"}
 
 # This dictionary maps unit groups to a standard unit type in the 
 # metric unit system:
@@ -147,7 +151,9 @@ MetricUnits = {"group_altitude"    : "meter",
                "group_temperature" : "degree_C",
                "group_time"        : "unix_epoch",
                "group_uv"          : "uv_index",
-               "group_volt"        : "volt"}
+               "group_volt"        : "volt",
+               "group_depth"       : "cm",
+               "group_volume"      : "liter_per_second"}
 
 # This dictionary maps unit groups to a standard unit type in the 
 # "Metric WX" unit system. It's the same as the "Metric" system,
@@ -219,7 +225,11 @@ conversionDict = {
       'hour'             : {'second'           : lambda x : x*3600.0,
                             'day'              : lambda x : x/24.0},
       'day'              : {'second'           : lambda x : x*86400.0,
-                            'hour'             : lambda x : x*24.0}}
+                            'hour'             : lambda x : x*24.0},
+      'gallon_per_minute': {'cubic_foot_second': lambda x : x*(0.1337/60),
+                            'liter_per_second' : lambda x : x*0.0630},
+      'liter_per_second' : {'cubic_foot_second': lambda x : x*(2.119/60),
+                            'gallon_per_minute': lambda x : x*15.852}}
 
 # This will extract all the target unit types in the above dictionary:
 allPossibleUnitTypes = set(z for d in conversionDict.values() for z in d.keys())
@@ -258,7 +268,10 @@ default_unit_format_dict = {"centibar"           : "%.0f",
                             "uv_index"           : "%.1f",
                             "volt"               : "%.1f",
                             "watt_per_meter_squared" : "%.0f",
-                            "NONE"              : "   N/A"}
+                            "gallon_per_minute"  : "%.1f",
+                            "cubic_foot_second"  : "%.1f",
+                            "liter_per_second"   : "%.0f",
+                            "NONE"               : "   N/A"}
 
 # Default unit labels to be used in the absence of a skin configuration file
 default_unit_label_dict = { "centibar"          : " cb",
@@ -294,6 +307,9 @@ default_unit_label_dict = { "centibar"          : " cb",
                             "uv_index"          : "",
                             "volt"              : " V",
                             "watt_per_meter_squared" : " W/m\xc2\xb2",
+                            "gallon_per_minute"  : "gpm",
+                            "cubic_foot_second"  : "cfs",
+                            "liter_per_second"   : "lps",
                             "NONE"              : "" }
 
 # Default strftime formatting to be used in the absence of a skin
